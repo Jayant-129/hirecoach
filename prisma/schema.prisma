@@ -27,6 +27,7 @@ model User {
   assessments   Assessment[]
   resume        Resume?
   coverLetter   CoverLetter[]
+  jobApplications JobApplication[]
 }
 
 model Assessment {
@@ -96,4 +97,46 @@ model IndustryInsight {
   nextUpdate    DateTime  // Scheduled update time
 
   @@index([industry])
+}
+
+model JobApplication {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  companyName     String
+  jobTitle        String
+  jobDescription  String?   @db.Text
+  jobUrl          String?
+  location        String?
+  salaryRange     String?
+  applicationDate DateTime  @default(now())
+  status          String    @default("applied") // applied, interviewing, offered, rejected, accepted
+  contactPerson   String?
+  contactEmail    String?
+  notes           String?   @db.Text
+  followUpDates   DateTime[]
+  nextSteps       String?
+  priority        String    @default("medium") // high, medium, low
+  interviews      JobInterview[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model JobInterview {
+  id                String    @id @default(cuid())
+  jobApplicationId  String
+  jobApplication    JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  interviewDate     DateTime
+  interviewType     String    // phone, video, onsite, technical, behavioral
+  interviewerNames  String?
+  notes             String?   @db.Text
+  feedback          String?   @db.Text
+  status            String    @default("scheduled") // scheduled, completed, cancelled
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([jobApplicationId])
 }

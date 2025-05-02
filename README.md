@@ -20,6 +20,8 @@ This AI Career Coach is a comprehensive web application I developed to help job 
 - **Performance Analytics Dashboard:** Built comprehensive visualization tools that track a user's progress across multiple interview practice sessions and provide actionable insights.
 - **Multi-format Export System:** Implemented functionality to export resumes and cover letters in multiple formats (PDF, DOCX, TXT) while maintaining professional formatting.
 - **Background Batch Processing:** Created an asynchronous processing system using Inngest to handle resource-intensive AI operations without affecting user experience.
+- **AI-Powered Networking Assistant:** Developed an intelligent networking module that suggests personalized connection strategies, generates outreach messages, and tracks networking effectiveness with custom metrics and visualizations.
+- **Advanced Job Application Tracker:** Built a comprehensive job application management system with visual analytics, status tracking, interview scheduling, and conversion rate metrics to help users optimize their job search strategy.
 
 ## Technologies Used
 

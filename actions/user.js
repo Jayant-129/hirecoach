@@ -16,31 +16,32 @@ export async function updateUser(data) {
   if (!user) throw new Error("User not found");
 
   try {
-    // Start a transaction to handle both operations
-    const result = await db.$transaction(
+    // First check if industry exists outside of transaction
+    let industryInsight = await db.industryInsight.findUnique({
+      where: {
+        industry: data.industry,
+      },
+    });
+
+    // If industry doesn't exist, create it with default values outside of transaction
+    if (!industryInsight) {
+      console.log("Generating AI insights for industry:", data.industry);
+      const insights = await generateAIInsights(data.industry);
+
+      industryInsight = await db.industryInsight.create({
+        data: {
+          industry: data.industry,
+          ...insights,
+          nextUpdate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        },
+      });
+      console.log("Created industry insights");
+    }
+
+    // Now update the user in a separate transaction with increased timeout
+    const updatedUser = await db.$transaction(
       async (tx) => {
-        // First check if industry exists
-        let industryInsight = await tx.industryInsight.findUnique({
-          where: {
-            industry: data.industry,
-          },
-        });
-
-        // If industry doesn't exist, create it with default values
-        if (!industryInsight) {
-          const insights = await generateAIInsights(data.industry);
-
-          industryInsight = await db.industryInsight.create({
-            data: {
-              industry: data.industry,
-              ...insights,
-              nextUpdate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            },
-          });
-        }
-
-        // Now update the user
-        const updatedUser = await tx.user.update({
+        return await tx.user.update({
           where: {
             id: user.id,
           },
@@ -51,19 +52,21 @@ export async function updateUser(data) {
             skills: data.skills,
           },
         });
-
-        return { updatedUser, industryInsight };
       },
       {
-        timeout: 10000, // default: 5000
+        timeout: 30000, // Increased from 10000 to 30000 (30 seconds)
+        maxWait: 45000, // Maximum time to wait for transaction to start if db is busy
+        isolationLevel: "ReadCommitted", // Less strict isolation level for better performance
       }
     );
 
     revalidatePath("/");
-    return result.user;
+    revalidatePath("/dashboard");
+
+    return updatedUser;
   } catch (error) {
-    console.error("Error updating user and industry:", error.message);
-    throw new Error("Failed to update profile");
+    console.error("Error updating user and industry:", error);
+    throw new Error(`Failed to update profile: ${error.message}`);
   }
 }
 

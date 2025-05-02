@@ -120,13 +120,37 @@ export default function ResumeBuilder({ initialContent }) {
         margin: [15, 15],
         filename: "resume.pdf",
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: {
+          scale: 2,
+          logging: true,
+          useCORS: true,
+          allowTaint: true,
+        },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       };
+
+      // Clean up any problematic elements that might cause the error
+      const elementsToRemove = element.querySelectorAll(
+        "script, iframe, canvas"
+      );
+      elementsToRemove.forEach((el) => el.remove());
+
+      // Remove any SVG elements or replace them with img tags if needed
+      const svgElements = element.querySelectorAll("svg");
+      svgElements.forEach((svg) => {
+        // Option to remove: svg.remove()
+        // Or create a placeholder
+        const placeholder = document.createElement("div");
+        placeholder.textContent = "[Image]";
+        svg.parentNode.replaceChild(placeholder, svg);
+      });
 
       await html2pdf().set(opt).from(element).save();
     } catch (error) {
       console.error("PDF generation error:", error);
+      toast.error(
+        "Failed to generate PDF. Try again or use browser print instead."
+      );
     } finally {
       setIsGenerating(false);
     }
