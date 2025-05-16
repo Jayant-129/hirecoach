@@ -30,24 +30,24 @@ const HeroSection = () => {
     <section className="w-full pt-36 md:pt-48 pb-10">
       <div className="space-y-6 text-center">
         <div className="space-y-6 mx-auto">
-          <h1 className="text-5xl font-bold md:text-6xl lg:text-7xl xl:text-8xl gradient-title animate-gradient">
+          <h1 className="text-5xl font-bold md:text-6xl lg:text-7xl xl:text-8xl gradient-title animate-gradient text-glow">
             Your AI Career Coach for
             <br />
             Professional Success
           </h1>
-          <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl">
+          <p className="mx-auto max-w-[600px] subtitle-text md:text-xl">
             Advance your career with personalized guidance, interview prep, and
             AI-powered tools for job success.
           </p>
         </div>
         <div className="flex justify-center space-x-4">
           <Link href="/dashboard">
-            <Button size="lg" className="px-8">
+            <Button size="lg" className="button-gradient px-8 py-3 text-lg">
               Get Started
             </Button>
           </Link>
           <Link href="https://github.com/Jayant-129/hirecoach">
-            <Button size="lg" variant="outline" className="px-8">
+            <Button size="lg" variant="outline" className="button-outline px-8 py-3 text-lg">
               Github
             </Button>
           </Link>
