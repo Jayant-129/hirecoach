@@ -47,7 +47,11 @@ const HeroSection = () => {
             </Button>
           </Link>
           <Link href="https://github.com/Jayant-129/hirecoach">
-            <Button size="lg" variant="outline" className="button-outline px-8 py-3 text-lg">
+            <Button
+              size="lg"
+              variant="outline"
+              className="button-outline px-8 py-3 text-lg"
+            >
               Github
             </Button>
           </Link>
@@ -56,8 +60,8 @@ const HeroSection = () => {
           <div ref={imageRef} className="hero-image">
             <Image
               src="/banner.jpeg"
-              width={1280}
-              height={720}
+              width={1100}
+              height={700}
               alt="Dashboard Preview"
               className="rounded-lg shadow-2xl border mx-auto"
               priority
